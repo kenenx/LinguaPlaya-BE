@@ -2,7 +2,7 @@
 Pipfile.lock
 .DS_Store
 .env
-env
+/env
 .flaskenv
 venv
 temp
