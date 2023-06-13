@@ -1,5 +1,8 @@
 .env
-env
+Pipfile.lock
+.DS_Store
+.env
+/env
 .flaskenv
 venv
 temp

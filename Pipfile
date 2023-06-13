@@ -6,20 +6,20 @@ name = "pypi"
 [packages]
 flask = "*"
 flask-cors = "*"
-flask-sqlalchemy = "*"
-jsonify = "*"
+flask-restful = "*"
+flask-jwt-extended = "*"
 werkzeug = "*"
+flask-sqlalchemy = "*"
+passlib = "*"
 python-dotenv = "*"
 psycopg2 = "*"
+sqlalchemy = "*"
+six = "*"
+pytz = "*"
 pyjwt = "*"
-flask-bcrypt = "*"
 pytest = "*"
-pytest-cov = "*"
-flask-jwt-extended = "*"
 
 [dev-packages]
-pytest-cov = "*"
-pytest = "*"
 
 [requires]
-python_version = "3.11"
+python_version = "3.9"

@@ -1,34 +1,60 @@
 import os
-
 from flask import Flask
-from flask_cors import CORS
-from flask_bcrypt import Bcrypt
+from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
-import config
+from flask_jwt_extended import JWTManager
 from dotenv import load_dotenv
-app = Flask(__name__)
-app.config.from_object(config)
 load_dotenv()
-CORS(app)
+# Making Flask Application
+app = Flask(__name__)
 
-app_settings = os.getenv(
-    'APP_SETTINGS',
-    'config.DevelopmentConfig'
-)
-app.config.from_object(app_settings)
+# Object of Api class
+api = Api(app)
 
-# app.config['SECRET_KEY']
-app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://tduqzxhb:4PRLJa7FCp0puJu9IY_6beg_htuFDye-@tyke.db.elephantsql.com/tduqzxhb'
-# app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('MY_DB')
+# Application Configuration
+app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB')
 
-bcrypt = Bcrypt(app)
-db=SQLAlchemy(app)
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-from auth.views import auth_blueprint
-app.register_blueprint(auth_blueprint)
+app.config['SECRET_KEY'] = 'ThisIsHardestThing'
 
-from application import users_routes
-from application import models
+app.config['JWT_SECRET_KEY'] = 'Dude!WhyShouldYouEncryptIt'
 
-if __name__ == '__main__':
-    app.run()
+app.config['JWT_BLACKLIST_ENABLED'] = True
+
+app.config['JWT_BLACKLIST_TOKEN_CHECKS'] = ['access', 'refresh']
+
+# SqlAlchemy object
+db = SQLAlchemy(app)
+
+# JwtManager object
+jwt = JWTManager(app)
+
+from application.models import RevokedTokenModel
+
+# Checking that token is in blacklist or not
+@jwt.token_in_blocklist_loader
+def check_if_token_in_blacklist(decrypted_token):
+
+    jti = decrypted_token['jti']
+
+    return RevokedTokenModel.is_jti_blacklisted(jti)
+
+# Importing models and resources
+
+from application import auth
+
+# Api Endpoints
+
+api.add_resource(auth.UserRegistration, '/registration')
+
+api.add_resource(auth.UserLogin, '/login')
+
+api.add_resource(auth.UserLogoutAccess, '/logout/access')
+
+# api.add_resource(auth.UserLogoutRefresh, '/logout/refresh')
+# api.add_resource(auth.TokenRefresh, '/token/refresh')
+
+# api.add_resource(auth.AllUsers, '/users')
+
+api.add_resource(auth.SecretResource, '/secret')

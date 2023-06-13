@@ -1,5 +1,5 @@
 import json
-import users_routes
+import __init__
 
 def test_api_get_user(app):
     res = app.get('/app/users/2')
