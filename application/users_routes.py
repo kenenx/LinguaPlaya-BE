@@ -3,7 +3,6 @@ from application import users_routes
 from application.models import Users
 from flask import request
 from flask import jsonify
-from flask import render_template
 
 @app.route("/")
 def hello_world():
@@ -11,25 +10,20 @@ def hello_world():
 
 
 #creat user
-@app.route("/users",methods = "[POST]")
-def create_user():
+# @app.route("/users",methods = "[POST]")
+# def create_user():
     
-    user = Users() 
-    db.session.add(user)
-    db.session.commit()
-        
-    # data = request.json
-   
-    return jsonify(id = user.users_id, name =user.name,age =user.age,email = user.email)
-
-
-
+#     user = Users() 
+#     db.session.add(user)
+#     db.session.commit()
+#     # data = request.json
+#     return jsonify(id = user.users_id, name =user.name,email = user.email, password = user.password )
 
 def format_users(user):
     return {
         "name": user.name,
-        "age": user.age,
-        "email": user.email
+        "email": user.email,
+        "password": user.password
     }
 
 # get user

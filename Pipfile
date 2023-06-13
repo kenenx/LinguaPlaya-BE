@@ -14,10 +14,12 @@ psycopg2 = "*"
 pyjwt = "*"
 flask-bcrypt = "*"
 pytest = "*"
+pytest-cov = "*"
+flask-jwt-extended = "*"
 
 [dev-packages]
 pytest-cov = "*"
 pytest = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.11"
