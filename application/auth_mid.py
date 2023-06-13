@@ -158,20 +158,20 @@ class UserLogoutAccess(Resource):
 #             return {'message': 'Something went wrong'}, 500
 
 
-# class TokenRefresh(Resource):
+class TokenRefresh(Resource):
     """
     Token Refresh Api
     """
-
+    @jwt_required
     # @jwt_refresh_token_required
-    # def post(self):
+    def post(self):
         
-    #     # Generating new access token
-    #     current_user = get_jwt_identity()
+        # Generating new access token
+        current_user = get_jwt_identity()
     
-    #     access_token = create_access_token(identity=current_user)
+        access_token = create_access_token(identity=current_user)
     
-    #     return {'access_token': access_token}
+        return {'access_token': access_token}
 
 
 class AllUsers(Resource):
