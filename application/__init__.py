@@ -1,18 +1,30 @@
+import os
+
 from flask import Flask
 from flask_cors import CORS
+from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
-
 
 app = Flask(__name__)
 
 CORS(app)
 
-# app.config['SECRET_KEY'] = '20172ef817c8b8e9f34067ef3f5b2b5c'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://ornaazhm:dlgrUjmXKiyiQFOdjkqg2U1j6xUOFLh2@lucky.db.elephantsql.com/ornaazhm'
+app_settings = os.getenv(
+    'APP_SETTINGS',
+    'config.DevelopmentConfig'
+)
+app.config.from_object(app_settings)
 
+app.config['SECRET_KEY']
+app.config['SQLALCHEMY_DATABASE_URI']
+
+bcrypt = Bcrypt(app)
 db=SQLAlchemy(app)
 
-from application import routes
+from auth.views import auth_blueprint
+app.register_blueprint(auth_blueprint)
+
+from application import users_routes
 from application import models
 
 if __name__ == '__main__':
