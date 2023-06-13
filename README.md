@@ -1,82 +1,41 @@
-# Flask JWT Auth
+# Flask-JWT-UserAuthentication
 
-[![Build Status](https://travis-ci.org/realpython/flask-jwt-auth.svg?branch=master)](https://travis-ci.org/realpython/flask-jwt-auth)
+- This is simple implementation of ```json web token``` based user authentication in flask.
 
-## Want to learn how to build this project?
+#### Modules Used
+- Flask
+- Flask-JWT-Extended
+- Flask-RESTful
+- Flask-SqlAlchemy
+- passlib
+- PyJWT
+- pytz
+- SQLAlchemy
+- Werkzeug
 
-Check out the [blog post](https://realpython.com/blog/python/token-based-authentication-with-flask/).
+#### Installation
 
-## Want to use this project?
+- Install all the dependancies using requirements.txt file...
+- ```pip install requirements.txt```
 
-### Basics
+#### Running Project
 
-1. Fork/Clone
-1. Activate a virtualenv
-1. Install the requirements
+##### Setup on Windows
+- setting flask application in Windows
+- ```set FLASK_APP=app.py```
+- ```set FLASK_DEBUG=1```
 
-### Set Environment Variables
+##### Setup on Unix
+- setting flask application in Unix
+- ```export FLASK_APP=app.py```
+- ```export FLASK_DEBUG=1```
 
-Update *project/server/config.py*, and then run:
+#### Run Application
+- After setting flask application, To run application use below command
+- ```flask run --port=8080```
+- ```--port``` flag is optional
 
-```sh
-$ export APP_SETTINGS="project.server.config.DevelopmentConfig"
-```
+### Author
+- D H R U V &nbsp;&nbsp; P R A J A P A T I
 
-or
-
-```sh
-$ export APP_SETTINGS="project.server.config.ProductionConfig"
-```
-
-Set a SECRET_KEY:
-
-```sh
-$ export SECRET_KEY="change_me"
-```
-
-### Create DB
-
-Create the databases in `psql`:
-
-```sh
-$ psql
-# create database flask_jwt_auth
-# create database flask_jwt_auth_test
-# \q
-```
-
-Create the tables and run the migrations:
-
-```sh
-$ python manage.py create_db
-$ python manage.py db init
-$ python manage.py db migrate
-```
-
-### Run the Application
-
-```sh
-$ python manage.py runserver
-```
-
-Access the application at the address [http://localhost:5000/](http://localhost:5000/)
-
-> Want to specify a different port?
-
-> ```sh
-> $ python manage.py runserver -h 0.0.0.0 -p 8080
-> ```
-
-### Testing
-
-Without coverage:
-
-```sh
-$ python manage.py test
-```
-
-With coverage:
-
-```sh
-$ python manage.py cov
-```
+### Thank You!
