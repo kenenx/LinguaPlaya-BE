@@ -13,14 +13,12 @@ class Users(db.Model):
     age = db.Column(db.Integer, nullable=False)
     username =  db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
-    password = bcrypt.generate_password_hash(
-            password, app.config.get('BCRYPT_LOG_ROUNDS')
-        ).decode()
+    password = db.Column(db.String(255), nullable=False)
     registered_on = db.Column(db.DateTime, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     flags = db.Column(db.Integer, nullable=False)
     # not sure about these
-    connections = db.Column(db.Integer, foreign_key = True)
+    # connections = db.Column(db.Integer, foreign_key = True)
     time_zone = db.Column(db.Integer, nullable=False)
     last_online = db.Column(db.Integer, nullable=False)
 
@@ -30,7 +28,9 @@ class Users(db.Model):
         self.age = age
         self.email = email
         self.username = username
-        self.password = password
+        self.password = bcrypt.generate_password_hash(
+            password, app.config.get('BCRYPT_LOG_ROUNDS')
+        ).decode()
         self.rating = rating
         self.flags = flags
         self.connections = connections
