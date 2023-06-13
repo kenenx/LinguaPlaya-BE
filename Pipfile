@@ -13,6 +13,7 @@ python-dotenv = "*"
 psycopg2 = "*"
 pyjwt = "*"
 flask-bcrypt = "*"
+pytest = "*"
 
 [dev-packages]
 pytest-cov = "*"
