@@ -1,23 +1,28 @@
+# project/server/auth/views.py
+
+
 from flask import Blueprint, request, make_response, jsonify
 from flask.views import MethodView
 
-from application import bcrypt, db
-from application.models import Users, BlacklistToken
+from project.server import bcrypt, db
+from project.server.models import User, BlacklistToken
 
 auth_blueprint = Blueprint('auth', __name__)
 
 
 class RegisterAPI(MethodView):
-   # User Registration Resource
+    """
+    User Registration Resource
+    """
 
     def post(self):
         # get the post data
         post_data = request.get_json()
         # check if user already exists
-        user = Users.query.filter_by(email=post_data.get('email')).first()
+        user = User.query.filter_by(email=post_data.get('email')).first()
         if not user:
             try:
-                user = Users(
+                user = User(
                     email=post_data.get('email'),
                     password=post_data.get('password')
                 )
@@ -47,13 +52,15 @@ class RegisterAPI(MethodView):
 
 
 class LoginAPI(MethodView):
-    # User Login Resource
+    """
+    User Login Resource
+    """
     def post(self):
         # get the post data
         post_data = request.get_json()
         try:
             # fetch the user data
-            user = Users.query.filter_by(
+            user = User.query.filter_by(
                 email=post_data.get('email')
             ).first()
             if user and bcrypt.check_password_hash(
@@ -82,7 +89,7 @@ class LoginAPI(MethodView):
             return make_response(jsonify(responseObject)), 500
 
 
-class UsersAPI(MethodView):
+class UserAPI(MethodView):
     """
     User Resource
     """
@@ -101,13 +108,13 @@ class UsersAPI(MethodView):
         else:
             auth_token = ''
         if auth_token:
-            resp = Users.decode_auth_token(auth_token)
+            resp = User.decode_auth_token(auth_token)
             if not isinstance(resp, str):
-                user = Users.query.filter_by(id=resp).first()
+                user = User.query.filter_by(id=resp).first()
                 responseObject = {
                     'status': 'success',
                     'data': {
-                        'users_id': user.id,
+                        'user_id': user.id,
                         'email': user.email,
                         'admin': user.admin,
                         'registered_on': user.registered_on
@@ -128,8 +135,9 @@ class UsersAPI(MethodView):
 
 
 class LogoutAPI(MethodView):
-   # Logout Resource
-
+    """
+    Logout Resource
+    """
     def post(self):
         # get auth token
         auth_header = request.headers.get('Authorization')
@@ -138,7 +146,7 @@ class LogoutAPI(MethodView):
         else:
             auth_token = ''
         if auth_token:
-            resp = Users.decode_auth_token(auth_token)
+            resp = User.decode_auth_token(auth_token)
             if not isinstance(resp, str):
                 # mark the token as blacklisted
                 blacklist_token = BlacklistToken(token=auth_token)
@@ -173,7 +181,7 @@ class LogoutAPI(MethodView):
 # define the API resources
 registration_view = RegisterAPI.as_view('register_api')
 login_view = LoginAPI.as_view('login_api')
-user_view = UsersAPI.as_view('user_api')
+user_view = UserAPI.as_view('user_api')
 logout_view = LogoutAPI.as_view('logout_api')
 
 # add Rules for API Endpoints
