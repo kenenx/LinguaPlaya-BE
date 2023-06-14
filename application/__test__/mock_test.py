@@ -1,9 +1,0 @@
-import pytest
-import __init__
-
-@pytest.fixture
-def api(monkeypatch):
-    test_users = [{'users_id': 1, 'username': 'testingName', 'password':'regefgfg'}, {'id': 2, 'username': 'NameTest', 'password':'wesdddsgd'}]
-    monkeypatch.setattr(__init__, "users", test_users)
-    app = __init__.app.test_client()
-    return app

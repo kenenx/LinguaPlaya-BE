@@ -1,5 +1,7 @@
 from flask_restful import Resource, reqparse
-
+from flask import session
+import json
+from application import app,db
 from application.models.users_models import UserModel, RevokedTokenModel
 
 from flask_jwt_extended import (
@@ -47,7 +49,6 @@ class UserRegistration(Resource):
             password=UserModel.generate_hash(data['password'])
 
         )
-        print(username,name,email)
         try:
             
             # Saving user in DB and Generating Access and Refresh token
@@ -75,11 +76,9 @@ class UserLogin(Resource):
     """
 
     def post(self):
-    
-        data = parser.parse_args()
-    
-        username = data['username']
 
+        data = parser.parse_args()
+        username = data['username']
         # Searching user by username
         current_user = UserModel.find_by_username(username)
         
@@ -99,9 +98,7 @@ class UserLogin(Resource):
             return {
         
                 'message': f'Logged in as {username}',
-        
                 'access_token': access_token,
-        
                 'refresh_token': refresh_token
         
             }
@@ -120,13 +117,16 @@ class UserLogoutAccess(Resource):
     def post(self):
 
         jti = get_jwt()['jti']
-        print(jti)
+        print('itwork?',jti)
         try:
             # Revoking access token
             revoked_token = RevokedTokenModel(jti=jti)
     
             revoked_token.add()
     
+    	    # if 'username' in session:
+		    #     session.pop('username', None)
+	        #     return jsonify({'message' : 'You successfully logged out'})
             return {'message': 'Access token has been revoked'}
     
         except:
@@ -157,6 +157,16 @@ class UserLogoutAccess(Resource):
         
 #             return {'message': 'Something went wrong'}, 500
 
+# class UserLogout(Resource):
+#     """
+#     User Logout Api 
+#     """
+#     @jwt_required
+#     def get(self):
+
+#         if 'username' in session:
+#             session.pop('username', None)
+#         return {'message' : 'You successfully logged out'}
 
 class TokenRefresh(Resource):
     """
@@ -172,27 +182,142 @@ class TokenRefresh(Resource):
         return {'access_token': access_token}
 
 
-class AllUsers(Resource):
-    
+class UsersDeets(Resource):
+        
     def get(self):
-        """
-        return all user api
-        """
-        return UserModel.return_all()
+        
+        data = parser.parse_args()
+        username = data['username']
+        # Searching user by username
+        current_user = UserModel.find_by_username(username)
+        
+        # user does not exists
+        if not current_user:
+            return {'message': f'User {username} doesn\'t exist'}
+        
+        # user exists, comparing password and hash
+        if UserModel.verify_hash(data['password'], current_user.password):
+            
+            # generating access token and refresh token
+            def to_json(x):
+                return {
+
+                    'username': x.username,
+                    'name': x.name,
+                    'email': x.email,
+                    'password': x.password,
+                    'profile_bio': x.profile_bio,
+                    'rating': x.rating,
+                    'flags': x.flags
+                }
+         
+        return {'users': [to_json(current_user)]}
+    
+    def patch(self):
+        parser.add_argument('username', required=False)
+        parser.add_argument('email', required=False)
+        parser.add_argument('name', required=False)
+        parser.add_argument('profile_bio', required=True)
+        # parser.add_argument('user_id', required=True)
+        data = parser.parse_args()
+        username = data['username']
+        # name = data['name']
+        # email = data['email']
+        # profile_bio = data['profile_bio']
+        # user_id = data['user_id']
+        # Searching user by username
+        current_user = UserModel.find_by_username(username)
+        # user does not exists
+        if not current_user:
+            return {'message': f'User {username} doesn\'t exist'}
+    
+        def to_json(x):
+           
+            x.username = data['username']
+            x.email = data['email'] 
+            x.name = data['name']
+            x.profile_bio = data['profile_bio'] 
+            db.session.commit()
+            updated_user = x
+            return {
+
+                'name' :updated_user.name,
+                'username':updated_user.username,
+                'email': updated_user.email,
+                'profile_bio':updated_user.profile_bio
+            }
+        
+       
+        return {'users': [to_json(current_user)]}
+
 
     def delete(self):
-        """
-        delete all user api
-        """
-        return UserModel.delete_all()
 
+        data = parser.parse_args()
+        username = data['username']
+        # Searching user by username
+        current_user = UserModel.find_by_username(username)
 
-class SecretResource(Resource):
+        db.session.delete(current_user)
+        db.session.commit()
+           
+        if not current_user:
+        
+            return {'message': f'User {username} doesn\'t exist'}
+        # return UserModel.delete_user(current_user) 
+        return {'message': 'user deleted'}
+        
+class UsersFlags(Resource):
+    def patch(self):
+        parser.add_argument('flags', required=False)
 
-    """
-    Secrest Resource Api
-    You can create crud operation in this way
-    """
-    @jwt_required
-    def get(self):
-        return {'answer': 'You are accessing super secret blueprint'}
+        data = parser.parse_args()
+        username = data['username']
+        current_user = UserModel.find_by_username(username)
+        # user does not exists
+        if not current_user:
+            return {'message': f'User {username} doesn\'t exist'}
+    
+        def to_json(x):
+           
+            x.flags = data['flags']
+
+            updated_user = x
+
+            if updated_user.flags == 3:
+                RevokedTokenModel
+            else:
+                return {
+
+                    'flags' :updated_user.flags,
+                }
+        
+        db.session.commit()
+
+        return {'users': [to_json(current_user)]}
+
+class UsersRating(Resource):
+    def patch(self):
+        parser.add_argument('rating', required=False)
+        data = parser.parse_args()
+        username = data['username']
+        current_user = UserModel.find_by_username(username)
+        # user does not exists
+        if not current_user:
+            return {'message': f'User {username} doesn\'t exist'}
+    
+        def to_json(x):
+            newrating = data['rating']
+            print( 'new', newrating)
+            x.rating = ( x.rating + int(newrating))/2
+            db.session.commit()
+            updated_user = x
+            return {
+
+                'rating' :updated_user.rating,
+
+            }
+        
+      
+
+        return {'users': [to_json(current_user)]}

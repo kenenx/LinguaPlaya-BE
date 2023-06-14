@@ -22,5 +22,10 @@ pyjwt = "*"
 pytest-cov = "*"
 pytest = "*"
 
+[scripts]
+start = "python app.py"
+test = "pytest ."
+coverage = "pytest --cov-report term-missing --cov=."
+
 [requires]
 python_version = "3.9"

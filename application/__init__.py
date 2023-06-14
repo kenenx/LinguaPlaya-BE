@@ -1,5 +1,6 @@
 import os
 from flask import Flask
+from flask_cors import CORS
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
@@ -7,7 +8,6 @@ from dotenv import load_dotenv
 load_dotenv()
 # Making Flask Application
 app = Flask(__name__)
-
 # Object of Api class
 api = Api(app)
 
@@ -40,8 +40,7 @@ def check_if_token_in_blacklist(decrypted_token):
 
     return RevokedTokenModel.is_jti_blacklisted(jti)
 
-
-from application import auth_routes
+from application import users_routes,routes
 from application import models
 if __name__ == '__main__':
-    api.run()
+    api.run(debug = True)
