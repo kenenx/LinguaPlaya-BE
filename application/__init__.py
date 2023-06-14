@@ -30,7 +30,7 @@ db = SQLAlchemy(app)
 # JwtManager object
 jwt = JWTManager(app)
 
-from application.models import RevokedTokenModel
+from application.models.users_models import RevokedTokenModel
 
 # Checking that token is in blacklist or not
 @jwt.token_in_blocklist_loader

@@ -17,9 +17,10 @@ sqlalchemy = "*"
 six = "*"
 pytz = "*"
 pyjwt = "*"
-pytest = "*"
 
 [dev-packages]
+pytest-cov = "*"
+pytest = "*"
 
 [requires]
 python_version = "3.9"
