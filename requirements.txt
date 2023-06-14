@@ -1,0 +1,15 @@
+Flask
+Flask-JWT-Extended
+Flask-RESTful
+Flask-SqlAlchemy
+passlib
+PyJWT
+pytz
+six
+SQLAlchemy
+Werkzeug
+flask-cors
+python-dotenv
+psycopg2
+pytest
+gunicorn
