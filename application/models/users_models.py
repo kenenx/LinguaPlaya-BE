@@ -1,11 +1,22 @@
 import datetime
 
+from sqlalchemy import Integer, ForeignKey, String, Column
+from sqlalchemy.orm import DeclarativeBase
+from sqlalchemy.orm import relationship
+
+
 from application import app,db
 
 from passlib.hash import pbkdf2_sha256 as sha256
 
-app.app_context().push()
-db.create_all()
+# app.app_context().push()
+# db.drop_all()
+# db.create_all()
+
+user_language = db.Table('user_language',
+                          db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
+                          db.Column('language_id',db.Integer, db.ForeignKey('language.language_id'))
+                          )
 
 class UserModel(db.Model):
     """
@@ -29,6 +40,8 @@ class UserModel(db.Model):
     profile_bio = db.Column(db.String(500), nullable=True)
     time_zone = db.Column(db.Integer, nullable=True)
     last_online = db.Column(db.Integer, nullable=True)
+    # user_languages = db.relationship('UserLanguage', backref='users')
+    languages = db.relationship('Language', secondary=user_language, backref='users',cascade="all,delete")
 
     """
     Save user details in Database
@@ -153,9 +166,27 @@ class RevokedTokenModel(db.Model):
 #         # self.time_zone = time_zone
 #         # self.last_online = last_online
 #         self.registered_on = datetime.datetime.now()
+
+# class UserLanguage(db.Model):
+#     user_languages_id = db.Column(db.Integer, primary_key=True)
+#     user_id = db.Column(db.Integer, ForeignKey("users.user_id"))
+#     language_id = db.Column(db.Integer, ForeignKey("language.language_id"))
+#     level = db.Column(db.String(1000), nullable = True)
+
+# user_language = db.Table('user_language',
+#                           db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
+#                           db.Column('language_id',db.Integer, db.ForeignKey('language.language_id'))
+#                           )
     
+class Language(db.Model):
+    language_id = db.Column(db.Integer, primary_key=True)
+    language_name = db.Column(db.String(100), nullable=False)
+    flag_base64 = db.Column(db.String(2000), nullable=True)
+    # user_languages = db.relationship('UserLanguages', backref='Languages')
 
 
-with app.app_context():
-    db.create_all()
-    print("Database tables created")
+
+# with app.app_context():
+#     db.drop_all()
+#     db.create_all()
+#     print("Database tables created")
