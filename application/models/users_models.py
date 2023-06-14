@@ -6,7 +6,6 @@ from sqlalchemy.orm import relationship
 
 
 from application import app,db
-
 from passlib.hash import pbkdf2_sha256 as sha256
 
 # app.app_context().push()
@@ -37,7 +36,6 @@ class UserModel(db.Model):
     user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True, nullable=False)
     password = db.Column(db.String(120), nullable=False)
-    # users_id = db.Column(db.Integer, primary_key=True)
     ###################################################
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(100), nullable=False)
@@ -74,48 +72,54 @@ class UserModel(db.Model):
         
         return cls.query.filter_by(username=username).first()
 
+    @classmethod
+    def find_by_id(cls, user_id):
+            
+        return cls.query.filter_by(user_id=user_id).first()
+
     """
     return all the user data in json form available in DB
     """
-    @classmethod
-    def return_all(cls):
+    # @classmethod
+    # def return_all(cls):
         
-        def to_json(x):
+    #     def to_json(x):
         
-            return {
+    #         return {
         
-                'username': x.username,
-                'name': x.name,
-                'email': x.email,
-                'age': x.age,
-                'password': x.password
-                # 'rating': x.rating,
-                # "flags": x.flags,
-                # "profile_bio": x.profile_bio,
-                # "time_zone" : x.time_zone,
-                # "last_online": x.last_online
+    #             'username': x.username,
+    #             'name': x.name,
+    #             'email': x.email,
+    #             'password': x.password
+    #             # 'rating': x.rating,
+    #             # "flags": x.flags,
+    #             # "profile_bio": x.profile_bio,
+    #             # "time_zone" : x.time_zone,
+    #             # "last_online": x.last_online
         
-            }
+    #         }
         
-        return {'users': [to_json(user) for user in UserModel.query.all()]}
+    #     return {'users': [to_json(user) for user in UserModel.query.all()]}
 
-    """
-    Delete user data
-    """
-    @classmethod
-    def delete_all(cls):
+    # """
+    # Delete user data
+    # """
+    # @classmethod
+    # def delete_user(cls, username):
         
-        try:
+    #     try:
+           
+    #         num_rows_deleted = cls.query.filter_by(username=username).first()
+    #         print('hello')
+    #         obj = cls.query.filter_by(num_rows_deleted).one()
+    #         db.session.delete(obj)
+    #         db.session.commit()
+           
+    #         return {'message': f'{username} is deleted'}
         
-            num_rows_deleted = db.session.query(cls).delete()
+    #     except:
         
-            db.session.commit()
-        
-            return {'message': f'{num_rows_deleted} row(s) deleted'}
-        
-        except:
-        
-            return {'message': 'Something went wrong'}
+    #         return {'message': 'Something went wrong'}
 
     """
     generate hash from password by encryption using sha256
