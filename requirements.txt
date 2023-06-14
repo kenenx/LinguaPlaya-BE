@@ -12,4 +12,4 @@ flask-cors
 python-dotenv
 psycopg2
 pytest
-gunicorn
+pytest-cov
