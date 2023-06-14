@@ -1,4 +1,4 @@
-
+import datetime
 
 from application import app,db
 
@@ -11,14 +11,24 @@ class UserModel(db.Model):
     """
     User Model Class
     """
-
     __tablename__ = 'users'
-
-    id = db.Column(db.Integer, primary_key=True)
-
+    user_id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(120), unique=True, nullable=False)
-
     password = db.Column(db.String(120), nullable=False)
+    # users_id = db.Column(db.Integer, primary_key=True)
+    ###################################################
+    name = db.Column(db.String(100), nullable=False)
+    email = db.Column(db.String(100), nullable=False)
+    # registered_on = db.Column(db.DateTime, nullable=False)
+    rating = db.Column(db.Integer, nullable=False, default = 5)
+    flags = db.Column(db.Integer, nullable=False, default = 0)
+# not sure about these yet
+#     # connections_id = db.Column(db.Integer, foreign_key = True)
+#     # langauges_id = db.Column(db.Integer, foreign_key = True)
+#     # games_id = db.Column(db.Integer, foreign_key = True)
+    profile_bio = db.Column(db.String(500), nullable=True)
+    time_zone = db.Column(db.Integer, nullable=True)
+    last_online = db.Column(db.Integer, nullable=True)
 
     """
     Save user details in Database
@@ -26,7 +36,6 @@ class UserModel(db.Model):
     def save_to_db(self):
 
         db.session.add(self)
-
         db.session.commit()
 
     """
@@ -48,8 +57,15 @@ class UserModel(db.Model):
             return {
         
                 'username': x.username,
-        
+                'name': x.name,
+                'email': x.email,
+                'age': x.age,
                 'password': x.password
+                # 'rating': x.rating,
+                # "flags": x.flags,
+                # "profile_bio": x.profile_bio,
+                # "time_zone" : x.time_zone,
+                # "last_online": x.last_online
         
             }
         
@@ -94,11 +110,9 @@ class RevokedTokenModel(db.Model):
     """
     Revoked Token Model Class
     """
-
     __tablename__ = 'revoked_tokens'
     
     id = db.Column(db.Integer, primary_key=True)
-    
     jti = db.Column(db.String(120))
 
     """
@@ -107,7 +121,6 @@ class RevokedTokenModel(db.Model):
     def add(self):
     
         db.session.add(self)
-    
         db.session.commit()
 
     """
@@ -122,26 +135,9 @@ class RevokedTokenModel(db.Model):
 
 
 ##############################################################
-import datetime
-from application import app,db
-
-app.app_context().push()
-db.create_all()
 
 # user models 
 # class Users(db.Model):
-#     users_id = db.Column(db.Integer, primary_key=True)
-#     name = db.Column(db.String(100), nullable=False)
-#     username =  db.Column(db.String(100), nullable=False)
-#     email = db.Column(db.String(100), nullable=False)
-#     password = db.Column(db.String(255), nullable=False)
-#     registered_on = db.Column(db.DateTime, nullable=False)
-#     # rating = db.Column(db.Integer, nullable=False, default = 5)
-#     # flags = db.Column(db.Integer, nullable=False, default = 0)
-#     # not sure about these
-#     # connections = db.Column(db.Integer, foreign_key = True)
-#     # time_zone = db.Column(db.Integer, nullable=False)
-#     # last_online = db.Column(db.Integer, nullable=False)
 
 # #rating,flags, connections, time_zone, last_online
 #     def __init__(self, name, email, username, password ):

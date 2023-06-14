@@ -16,9 +16,9 @@ app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB')
 
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
-app.config['SECRET_KEY'] = 'ThisIsHardestThing'
+app.config['SECRET_KEY'] = os.getenv('HUSH_HUSH')
 
-app.config['JWT_SECRET_KEY'] = 'Dude!WhyShouldYouEncryptIt'
+app.config['JWT_SECRET_KEY'] = os.getenv("TOKEN_HUSH")
 
 app.config['JWT_BLACKLIST_ENABLED'] = True
 
@@ -30,7 +30,7 @@ db = SQLAlchemy(app)
 # JwtManager object
 jwt = JWTManager(app)
 
-from application.models import RevokedTokenModel
+from application.models.users_models import RevokedTokenModel
 
 # Checking that token is in blacklist or not
 @jwt.token_in_blocklist_loader
@@ -40,21 +40,8 @@ def check_if_token_in_blacklist(decrypted_token):
 
     return RevokedTokenModel.is_jti_blacklisted(jti)
 
-# Importing models and resources
 
-from application import auth
-
-# Api Endpoints
-
-api.add_resource(auth.UserRegistration, '/registration')
-
-api.add_resource(auth.UserLogin, '/login')
-
-api.add_resource(auth.UserLogoutAccess, '/logout/access')
-
-# api.add_resource(auth.UserLogoutRefresh, '/logout/refresh')
-# api.add_resource(auth.TokenRefresh, '/token/refresh')
-
-# api.add_resource(auth.AllUsers, '/users')
-
-api.add_resource(auth.SecretResource, '/secret')
+from application import auth_routes
+from application import models
+if __name__ == '__main__':
+    api.run()
