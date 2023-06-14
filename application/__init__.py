@@ -40,7 +40,7 @@ def check_if_token_in_blacklist(decrypted_token):
 
     return RevokedTokenModel.is_jti_blacklisted(jti)
 
-from application import users_routes,routes
+from application import routes
 from application import models
 if __name__ == '__main__':
     api.run(debug = True)
