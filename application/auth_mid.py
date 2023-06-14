@@ -16,17 +16,18 @@ import pdb
 parser = reqparse.RequestParser()
 
 parser.add_argument('username', help='username cannot be blank', required=True)
-# parser.add_argument('email', help='email cannot be blank', required=True)
+
 parser.add_argument('password', help='password cannot be blank', required=True)
-# parser.add_argument('name', help='name cannot be blank', required=True)
+
 
 class UserRegistration(Resource):
     """
     User Registration Api
     """
-
+   
     def post(self):
-
+        parser.add_argument('email', help='email cannot be blank', required=True)
+        parser.add_argument('name', help='name cannot be blank', required=True)
         data = parser.parse_args()
 
         username = data['username']
