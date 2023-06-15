@@ -42,3 +42,5 @@ db.session.add_all([game1,game2,game3,game4,game5,])
 
 db.session.commit()
 print("Database seeded")
+
+print (user1.games)

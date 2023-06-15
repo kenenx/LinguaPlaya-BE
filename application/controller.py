@@ -1,8 +1,8 @@
 from flask_restful import Resource, reqparse
-from flask import session
+from flask import session, request
 import json
 from application import app,db
-from application.models.users_models import UserModel, RevokedTokenModel, Language, Game
+from application.models.users_models import UserModel, RevokedTokenModel, Language, Game, user_game
 
 from flask_jwt_extended import (
     create_access_token,
@@ -351,10 +351,8 @@ class UserGames(Resource):
 
     def get(self):
 
-        data = parser.parse_args()
-        username = data['username']
+        return self.query.join(user_game).join(Game).filter(user_game.c.user_id == self.user_id) & (user_game.c.game_id == Game.game_id).all()
 
-        return UserModel.find_user_games_by_username(username)
 
 class AllGames(Resource):
     def get(self):
