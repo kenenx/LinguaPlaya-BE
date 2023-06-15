@@ -18,9 +18,7 @@ import pdb
 parser = reqparse.RequestParser()
 
 parser.add_argument('username', help='username cannot be blank', required=True)
-
 parser.add_argument('password', help='password cannot be blank', required=True)
-
 
 class UserRegistration(Resource):
     """
@@ -134,28 +132,28 @@ class UserLogoutAccess(Resource):
             return {'message': 'Something went wrong'}, 500
 
 
-# class UserLogoutRefresh(Resource):
-#     """
-#     User Logout Refresh Api 
-#     """
-#     @jwt_refresh_token_required
-#     def post(self):
+#  class UserLogoutRefresh(Resource):
+    """
+    User Logout Refresh Api 
+    """
+    # @jwt_refresh_token_required
+    # def post(self):
 
-#         jti = get_jwt()['jti']
+        # jti = get_jwt()['jti']
         
-#         try:
+        # try:
         
-#             revoked_token = RevokedTokenModel(jti=jti)
+        #     revoked_token = RevokedTokenModel(jti=jti)
         
-#             revoked_token.add()
+        #     revoked_token.add()
         
-#             pdb.set_trace()
+        #     pdb.set_trace()
         
-#             return {'message': 'Refresh token has been revoked'}
+        #     return {'message': 'Refresh token has been revoked'}
         
-#         except:
+        # except:
         
-#             return {'message': 'Something went wrong'}, 500
+        #     return {'message': 'Something went wrong'}, 500
 
 # class UserLogout(Resource):
 #     """
@@ -181,6 +179,11 @@ class TokenRefresh(Resource):
     
         return {'access_token': access_token}
 
+
+class AllUsers(Resource):
+    def get(self):
+        
+        return UserModel.return_all()
 
 class UsersDeets(Resource):
         
@@ -281,18 +284,18 @@ class UsersFlags(Resource):
         def to_json(x):
            
             x.flags = data['flags']
-
+            db.session.commit()
             updated_user = x
 
-            if updated_user.flags == 3:
-                RevokedTokenModel
+            if updated_user.flags == 4:
+                RevokedTokenModel.add
             else:
                 return {
 
                     'flags' :updated_user.flags,
                 }
         
-        db.session.commit()
+       
 
         return {'users': [to_json(current_user)]}
 
