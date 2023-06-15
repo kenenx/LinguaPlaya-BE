@@ -52,26 +52,26 @@ class UserModel(db.Model):
     """
     return all the user data in json form available in DB
     """
-    # @classmethod
-    # def return_all(cls):
+    @classmethod
+    def return_all(cls):
         
-    #     def to_json(x):
+        def to_json(x):
         
-    #         return {
+            return {
         
-    #             'username': x.username,
-    #             'name': x.name,
-    #             'email': x.email,
-    #             'password': x.password
-    #             # 'rating': x.rating,
-    #             # "flags": x.flags,
-    #             # "profile_bio": x.profile_bio,
-    #             # "time_zone" : x.time_zone,
-    #             # "last_online": x.last_online
+                'username': x.username,
+                'name': x.name,
+                'email': x.email,
+                'password': x.password
+                # 'rating': x.rating,
+                # "flags": x.flags,
+                # "profile_bio": x.profile_bio,
+                # "time_zone" : x.time_zone,
+                # "last_online": x.last_online
         
-    #         }
+            }
         
-    #     return {'users': [to_json(user) for user in UserModel.query.all()]}
+        return {'users': [to_json(user) for user in UserModel.query.all()]}
 
     # """
     # Delete user data
