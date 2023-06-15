@@ -85,12 +85,10 @@ class UserModel(db.Model):
         return cls.query.filter_by(user_id=user_id).first()
     
     @classmethod
-    def find_user_games_by_username(cls, username):
+    def find_user_games(cls):
+        # query.join(user_game).join(Game).filter(user_game.c.user_id == cls.user_id) & (user_game.c.game_id == Game.game_id).all()
 
-        return cls.query\
-        .join(game, user_game)\
-        .filter_by(username=username).first()
-    
+        return cls.query.join(Game).join(user_game).filter(cls).all()
     """
     return all the user data in json form available in DB
     """
