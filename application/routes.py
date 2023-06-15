@@ -22,13 +22,12 @@ api.add_resource(controller.UsersDeets, '/users')
 
 ############################################################
 # user
-api.add_resource(controller.UsersFlags, '/user/flags')
-api.add_resource(controller.UsersRating, '/user/rating')
-
-
+api.add_resource(controller.AllUsers, '/users/all')
+api.add_resource(controller.UsersFlags, '/users/flags')
+api.add_resource(controller.UsersRating, '/users/rating')
 
 # Langauges
 api.add_resource(controller.Languages, '/languages')
 
 # Games
-api.add_resource(controller.Games, '/Games')
+api.add_resource(controller.Games, '/games')
