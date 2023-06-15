@@ -20,7 +20,7 @@ parser = reqparse.RequestParser()
 parser.add_argument('username', help='username cannot be blank', required=False)
 parser.add_argument('password', help='password cannot be blank', required=False)
 
-class UserRegistration(Resource):
+class UserSignup(Resource):
     """
     User Registration Api
     """
@@ -60,7 +60,6 @@ class UserRegistration(Resource):
                 'message': f'User {username} was created',
                 'access_token': access_token,
                 'refresh_token': refresh_token
-            
             }
         
         except (RuntimeError, TypeError, NameError, ValueError):

@@ -104,10 +104,9 @@ class UserModel(db.Model):
                 'username': x.username,
                 'name': x.name,
                 'email': x.email,
-                'password': x.password
-                # 'rating': x.rating,
+                'rating': x.rating,
                 # "flags": x.flags,
-                # "profile_bio": x.profile_bio,
+                "profile_bio": x.profile_bio,
                 # "time_zone" : x.time_zone,
                 # "last_online": x.last_online
         

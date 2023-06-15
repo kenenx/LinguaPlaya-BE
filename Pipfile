@@ -17,6 +17,7 @@ sqlalchemy = "*"
 six = "*"
 pytz = "*"
 pyjwt = "*"
+flask-testing = "*"
 
 [dev-packages]
 pytest-cov = "*"
