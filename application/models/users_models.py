@@ -83,7 +83,14 @@ class UserModel(db.Model):
     def find_by_id(cls, user_id):
             
         return cls.query.filter_by(user_id=user_id).first()
+    
+    @classmethod
+    def find_user_games_by_username(cls, username):
 
+        return cls.query\
+        .join(game, user_game)\
+        .filter_by(username=username).first()
+    
     """
     return all the user data in json form available in DB
     """
@@ -205,15 +212,73 @@ class RevokedTokenModel(db.Model):
 #                           )
     
 class Language(db.Model):
+
     language_id = db.Column(db.Integer, primary_key=True)
-    language_name = db.Column(db.String(100), nullable=False)
+    language_name = db.Column(db.String(100),unique=True, nullable=False)
     flag_base64 = db.Column(db.String(2000), nullable=True)
-    # user_languages = db.relationship('UserLanguages', backref='Languages')
+    """
+    Save language details in Database
+    """
+    def save_to_db(self):
+
+        db.session.add(self)
+        db.session.commit()
+    """
+    Find language by name
+    """
+    @classmethod
+    def find_by_name(cls, language_name):
+        return cls.query.filter_by(language_name=language_name).first()
+    
+    @classmethod
+    def find_by_id(cls, language_id):
+        return cls.query.filter_by(language_id=language_id).first()
+    """
+    return all the languages
+    """
+    @classmethod
+    def return_all(cls):
+        def to_json(x):
+            return {
+                'language_id': x.language_id,
+                'language_name': x.language_name,
+                # 'flag_base64': x.email,
+            }
+        return {'languages': [to_json(language) for language in Language.query.all()]}
 
 class Game(db.Model):
     game_id = db.Column(db.Integer, primary_key=True)
     game_name = db.Column(db.String(100), nullable=False)
     platform = db.Column(db.String(100), nullable=True)
+    """
+    Save game details in Database
+    """
+    def save_to_db(self):
+
+        db.session.add(self)
+        db.session.commit()
+    """
+    Find game by name
+    """
+    @classmethod
+    def find_by_name(cls, game_name):
+        return cls.query.filter_by(game_name=game_name).first()
+    
+    @classmethod
+    def find_by_id(cls, game_id):
+        return cls.query.filter_by(game_id=game_id).first()
+    """
+    return all the games
+    """
+    @classmethod
+    def return_all(cls):
+        def to_json(x):
+            return {
+                'game_id': x.game_id,
+                'game_name': x.game_name,
+                'platform': x.platform,
+            }
+        return {'games': [to_json(game) for game in Game.query.all()]}
 
 
 

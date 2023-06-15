@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import session
 import json
 from application import app,db
-from application.models.users_models import UserModel, RevokedTokenModel
+from application.models.users_models import UserModel, RevokedTokenModel, Language, Game
 
 from flask_jwt_extended import (
     create_access_token,
@@ -17,8 +17,8 @@ import pdb
 
 parser = reqparse.RequestParser()
 
-parser.add_argument('username', help='username cannot be blank', required=True)
-parser.add_argument('password', help='password cannot be blank', required=True)
+parser.add_argument('username', help='username cannot be blank', required=False)
+parser.add_argument('password', help='password cannot be blank', required=False)
 
 class UserRegistration(Resource):
     """
@@ -294,9 +294,7 @@ class UsersFlags(Resource):
 
                     'flags' :updated_user.flags,
                 }
-        
-       
-
+            
         return {'users': [to_json(current_user)]}
 
 class UsersRating(Resource):
@@ -316,11 +314,73 @@ class UsersRating(Resource):
             db.session.commit()
             updated_user = x
             return {
-
                 'rating' :updated_user.rating,
-
             }
         
-      
-
         return {'users': [to_json(current_user)]}
+    
+class AllLanguages(Resource):
+    def get(self):
+        return Language.return_all()
+    
+class Languages(Resource):
+    def post(self):
+        parser.add_argument('language_name', help='language cannot be blank', required=False)
+        data = parser.parse_args()
+
+        language_name = data['language_name']
+        # flag_base64 = data['flag_base64']
+
+        # Checking that user is already exist or not
+        if Language.find_by_name(language_name):
+            return {'message': f'{language_name} already exists'}
+        # create new language
+        new_language = Language(
+            language_name=language_name,
+            # flag_base64= flag_base64,
+        )
+        try:
+            new_language.save_to_db()
+            return {
+                'message': f'{language_name} was created',
+            }
+        except (RuntimeError, TypeError, NameError, ValueError):
+            return RuntimeError, TypeError, NameError, ValueError
+        
+class UserGames(Resource):
+
+    def get(self):
+
+        data = parser.parse_args()
+        username = data['username']
+
+        return UserModel.find_user_games_by_username(username)
+
+class AllGames(Resource):
+    def get(self):
+        return Game.return_all()
+    
+class Games(Resource):
+    def post(self):
+        parser.add_argument('game_name', help='game cannot be blank', required=False)
+        parser.add_argument('platform', help='platform cannot be blank', required=False)
+        data = parser.parse_args()
+
+        game_name = data['game_name']
+        platform = data['platform']
+
+        # Checking that user is already exist or not
+        if Game.find_by_name(game_name):
+            return {'message': f'{game_name} already exists'}
+        # create new language
+        new_game = Game(
+            game_name=game_name,
+            platform=platform,
+        )
+        try:
+            new_game.save_to_db()
+            return {
+                'message': f'{game_name} was created',
+            }
+        except (RuntimeError, TypeError, NameError, ValueError):
+            return RuntimeError, TypeError, NameError, ValueError

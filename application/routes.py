@@ -27,7 +27,10 @@ api.add_resource(controller.UsersFlags, '/users/flags')
 api.add_resource(controller.UsersRating, '/users/rating')
 
 # Langauges
-api.add_resource(controller.Languages, '/languages')
+api.add_resource(controller.Languages,'/languages')
+api.add_resource(controller.AllLanguages, '/languages/all')
 
 # Games
-api.add_resource(controller.Games, '/games')
+api.add_resource(controller.AllGames, '/games/all')
+api.add_resource(controller.Games, '/games/')
+api.add_resource(controller.UserGames, '/games/<username>')
