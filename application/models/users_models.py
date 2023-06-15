@@ -12,8 +12,14 @@ from passlib.hash import pbkdf2_sha256 as sha256
 # db.drop_all()
 # db.create_all()
 
-user_language = db.Table('user_language',
-                        db.Column('user_language_id',db.Integer, primary_key=True),
+user_language_known = db.Table('user_language_known',
+                          db.Column('user_language_known_id',db.Integer, primary_key=True),
+                          db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
+                          db.Column('language_id',db.Integer, db.ForeignKey('language.language_id'))
+                          )
+
+user_language_learn = db.Table('user_language_learn',
+                          db.Column('user_language_learn_id',db.Integer, primary_key=True),
                           db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
                           db.Column('language_id',db.Integer, db.ForeignKey('language.language_id'))
                           )
@@ -50,7 +56,8 @@ class UserModel(db.Model):
     time_zone = db.Column(db.Integer, nullable=True)
     last_online = db.Column(db.Integer, nullable=True)
     # user_languages = db.relationship('UserLanguage', backref='users')
-    languages = db.relationship('Language', secondary=user_language, backref='users', cascade="all,delete")
+    languages_known = db.relationship('Language', secondary=user_language_known, backref='known', cascade="all,delete")
+    languages_learn = db.relationship('Language', secondary=user_language_learn, backref='learn', cascade="all,delete")
     games = db.relationship('Game', secondary=user_game, backref='users', cascade="all,delete")
     connections = db.relationship('UserModel', secondary=user_connection, primaryjoin=user_id==user_connection.c.user_Parent_id,
                                   secondaryjoin=user_id==user_connection.c.user_Child_id,backref=('parent')
