@@ -280,6 +280,39 @@ class Game(db.Model):
             }
         return {'games': [to_json(game) for game in Game.query.all()]}
     
+@app.route("/users/connections")
+def get_users_connections():
+    user_games_query = db.session.query(UserModel, Game, user_game).join(UserModel).join(Game).all()
+    result = []
+    for row in user_games_query:
+        result.append({
+            'Parent_id': row.user_id,
+            'Child_id': row.user_id
+        })
+    return jsonify(result)
+
+@app.route("/users/languages_known")
+def get_users_languages_known():
+    user_games_query = db.session.query(UserModel, user_language_known, Language).join(UserModel).join(Language).all()
+    result = []
+    for row in user_games_query:
+        result.append({
+            'user_id': row.user_id,
+            'language_id_known': row.language_id
+        })
+    return jsonify(result)
+
+@app.route("/users/languages_learn")
+def get_users_languages_learn():
+    user_games_query = db.session.query(UserModel, user_language_learn, Language).join(UserModel).join(Language).all()
+    result = []
+    for row in user_games_query:
+        result.append({
+            'user_id': row.user_id,
+            'language_id_learn': row.language_id
+        })
+    return jsonify(result)
+
 @app.route("/users/games")
 def get_users_games():
     user_games_query = db.session.query(UserModel, Game, user_game).join(UserModel).join(Game).all()
