@@ -2,6 +2,7 @@ Flask
 Flask-JWT-Extended
 Flask-RESTful
 Flask-SqlAlchemy
+Flask-cors
 passlib
 PyJWT
 pytz

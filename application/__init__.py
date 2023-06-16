@@ -10,7 +10,7 @@ load_dotenv()
 app = Flask(__name__)
 # Object of Api class
 api = Api(app)
-CORS(app)
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 
 # Application Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB')
