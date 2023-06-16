@@ -347,12 +347,46 @@ class Languages(Resource):
         except (RuntimeError, TypeError, NameError, ValueError):
             return RuntimeError, TypeError, NameError, ValueError
         
+# class UserGames(Resource):
+
+#     def get(self):
+#         parser.add_argument('user_id', help='game cannot be blank', required=False)
+#         data = parser.parse_args()
+#         user_id = data['user_id']
+#         current_user = UserModel.find_by_id(user_id)
+#         def to_json(x):
+#             return {
+#                 'username': x.username,
+#                 'games': x.games
+#             }
+
+#         return UserModel.find_user_games(user_id)
+
 class UserGames(Resource):
 
     def get(self):
+        
+        parser.add_argument('user_id', help='game cannot be blank', required=False)
+        parser.add_argument('username', help='username cannot be blank', required=False)
+        data = parser.parse_args()
+        user_id = data['user_id']
+        username = data['username']
+        current_user = UserModel.find_by_username(username)
+        # listgames = str(listgames)
+        # usergames = db.session.query.join(user_game.user_game_id).filter(user_game.user_id == self.user_id).all()
+        # listgames = self.query.join(Game.game_id).join(UserModel.games).filter(user_id == UserModel.user_id).all()
+        def to_json(x):
+            return {
+                'username': x.username,
+                'games': x.games
+            }
+        print (current_user)
+        # plzwork = db.session.query(UserModel, user_game).filter(UserModel.user_id == user_game.user_id,).filter( UserModel.user_id == user_id,).all()
+        plzwork = UserModel.find_user_games(user_id)
 
-        return self.query.join(user_game).join(Game).filter(user_game.c.user_id == self.user_id) & (user_game.c.game_id == Game.game_id).all()
-
+        return {'users': [to_json(plzwork)]}
+    
+    # plzwork = db.session.query(UserModel, Game).filter(UserModel.user_id == Game.user_id,).filter( UserModel.username == current_user,).all()
 
 class AllGames(Resource):
     def get(self):

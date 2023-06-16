@@ -1,5 +1,5 @@
 import datetime
-
+from flask import jsonify
 from sqlalchemy import Integer, ForeignKey, String, Column
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import relationship
@@ -85,10 +85,12 @@ class UserModel(db.Model):
         return cls.query.filter_by(user_id=user_id).first()
     
     @classmethod
-    def find_user_games(cls):
+    def find_user_games(cls, user_id):
         # query.join(user_game).join(Game).filter(user_game.c.user_id == cls.user_id) & (user_game.c.game_id == Game.game_id).all()
 
-        return cls.query.join(Game).join(user_game).filter(cls).all()
+        # return db.session.query.join(user_game).join(Game).filter(user_game.c.user_id == cls.user_id) & (user_game.c.game_id == Game.game_id).all()
+        return cls.query(cls).join(user_game, cls.user_id == user_game.user_id).filter(cls.user_id== user_id).all()
+        
     """
     return all the user data in json form available in DB
     """
@@ -277,10 +279,14 @@ class Game(db.Model):
                 'platform': x.platform,
             }
         return {'games': [to_json(game) for game in Game.query.all()]}
-
-
-
-# with app.app_context():
-#     db.drop_all()
-#     db.create_all()
-#     print("Database tables created")
+    
+@app.route("/users/games")
+def get_users_games():
+    user_games_query = db.session.query(UserModel, Game, user_game).join(UserModel).join(Game).all()
+    result = []
+    for row in user_games_query:
+        result.append({
+            'user_id': row.user_id,
+            'game_id': row.game_id
+        })
+    return jsonify(result)
