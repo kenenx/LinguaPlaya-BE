@@ -281,12 +281,13 @@ class Game(db.Model):
     
 @app.route("/users/connections")
 def get_users_connections():
-    user_query = db.session.query(UserModel, Game, user_game).join(UserModel).join(Game).all()
+    user_query = db.session.query(UserModel, user_connection).all()
     result = []
+    print(user_query)
     for row in user_query:
         result.append({
-            'Parent_id': row.user_id,
-            'Child_id': row.user_id
+            'user_id': row[2],
+            'connected_user_id': row[3]
         })
     return jsonify(result)
 
@@ -316,10 +317,10 @@ def get_users_languages_known():
     print(user_query)
     for row in user_query:
         result.append({
-            'user_id': row.user_id,
-            'language_id_known': row.language_id,
+            # 'user_id': row.user_id,
+            # 'language_id_known': row.language_id,
             'username': row.UserModel.username,
-            'language_learn': row.Language.language_name
+            'language_known': row.Language.language_name
         })
     return jsonify(result)
 
@@ -333,7 +334,7 @@ def get_users_languages_learn():
             # 'user_id': row.user_id,
             # 'language_id_learn': row.language_id,
             'username': row.UserModel.username,
-            'language_known': row.Language.language_name
+            'language_learn': row.Language.language_name
         })
     return jsonify(result)
 
