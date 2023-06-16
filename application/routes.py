@@ -1,4 +1,4 @@
-from application import app
+from application import app, db
 from application import controller
 
 @app.route("/")
@@ -33,4 +33,6 @@ api.add_resource(controller.AllLanguages, '/languages/all')
 # Games
 api.add_resource(controller.AllGames, '/games/all')
 api.add_resource(controller.Games, '/games/')
-api.add_resource(controller.UserGames, '/users/games')
+# api.add_resource(controller.UserGames, '/users/games')
+
+
