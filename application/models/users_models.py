@@ -107,6 +107,10 @@ class UserModel(db.Model):
                 'rating': x.rating,
                 # "flags": x.flags,
                 "profile_bio": x.profile_bio,
+                'languages_known': x.languages_known,
+                'languages_learn': x.languages_learn,
+                'games': x.games,
+                'connections': x.connections
                 # "time_zone" : x.time_zone,
                 # "last_online": x.last_online
         
@@ -181,24 +185,6 @@ class RevokedTokenModel(db.Model):
 
 ##############################################################
 
-# user models 
-# class Users(db.Model):
-
-# #rating,flags, connections, time_zone, last_online
-#     def __init__(self, name, email, username, password ):
-#         self.name = name
-#         self.email = email
-#         self.username = username
-#         self.password = bcrypt.generate_password_hash(
-#             password, app.config.get('BCRYPT_LOG_ROUNDS')
-#         ).decode()
-#         # self.rating = rating
-#         # self.flags = flags
-#         # self.connections = connections
-#         # self.time_zone = time_zone
-#         # self.last_online = last_online
-#         self.registered_on = datetime.datetime.now()
-
 # class UserLanguage(db.Model):
 #     user_languages_id = db.Column(db.Integer, primary_key=True)
 #     user_id = db.Column(db.Integer, ForeignKey("users.user_id"))
@@ -247,6 +233,7 @@ class Language(db.Model):
 
 class Game(db.Model):
     game_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable = False)
     game_name = db.Column(db.String(100), nullable=False)
     platform = db.Column(db.String(100), nullable=True)
     """
@@ -281,11 +268,25 @@ class Game(db.Model):
     
 @app.route("/users/games")
 def get_users_games():
-    user_games_query = db.session.query(UserModel, Game, user_game).join(UserModel).join(Game).all()
+    user_games_query = db.session.query(UserModel, Game, user_game).join(user_game, UserModel.user_id == user_game.user_id).filter(UserModel.user_id== Game.user_id).all()
+    # user_games_query = db.session.query().join(UserModel).join(Game).filter(UserModel.user_id== Game.user_id).all()
     result = []
+    
     for row in user_games_query:
         result.append({
             'user_id': row.user_id,
             'game_id': row.game_id
         })
     return jsonify(result)
+
+# def post_add_games():
+
+#     user_games_query = db.session.query(UserModel, Game, user_game).join(user_game, UserModel.user_id == user_game.user_id).filter(UserModel.user_id== Game.user_id).all()
+    
+#     result = [UserModel.games]
+#     for row in user_games_query:
+#         result.append({
+#             'games': row.UserModel.games,
+            
+#         })
+#     return jsonify(result)

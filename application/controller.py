@@ -210,7 +210,11 @@ class UsersDeets(Resource):
                     'password': x.password,
                     'profile_bio': x.profile_bio,
                     'rating': x.rating,
-                    'flags': x.flags
+                    'flags': x.flags,
+                    'languages_known': x.languages_known,
+                    'languages_learn': x.languages_learn,
+                    'games': x.games,
+                    'connections': x.connections
                 }
          
         return {'users': [to_json(current_user)]}
@@ -219,7 +223,11 @@ class UsersDeets(Resource):
         parser.add_argument('username', required=False)
         parser.add_argument('email', required=False)
         parser.add_argument('name', required=False)
-        parser.add_argument('profile_bio', required=True)
+        parser.add_argument('profile_bio', required=False)
+        parser.add_argument('games', required=False)
+        parser.add_argument('languages_known', required=False)
+        parser.add_argument('languages_learn', required=False)
+        # parser.add_argument('', required=False)
         # parser.add_argument('user_id', required=True)
         data = parser.parse_args()
         username = data['username']
@@ -246,7 +254,12 @@ class UsersDeets(Resource):
                 'name' :updated_user.name,
                 'username':updated_user.username,
                 'email': updated_user.email,
-                'profile_bio':updated_user.profile_bio
+                'profile_bio':updated_user.profile_bio,
+                'games':updated_user.games,
+                'languages_known' : updated_user.languages_known,
+                'languages_learn': updated_user.languages_learn,
+                'connections': updated_user.connections
+
             }
         
        
