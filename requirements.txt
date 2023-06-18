@@ -2,13 +2,13 @@ Flask
 Flask-JWT-Extended
 Flask-RESTful
 Flask-SqlAlchemy
+Flask-cors
 passlib
 PyJWT
 pytz
 six
 SQLAlchemy
 Werkzeug
-flask-cors
 python-dotenv
 psycopg2
 pytest
