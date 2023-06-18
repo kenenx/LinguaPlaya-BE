@@ -21,7 +21,7 @@ api.add_resource(controller.UserLogoutAccess, '/logout/access') #POST
 
 ############################################################
 # user
-api.add_resource(controller.UsersDeets, '/users')
+#api.add_resource(controller.UsersDeets, '/users/<username>')
 api.add_resource(controller.AllUsers, '/users/all')
 api.add_resource(controller.UsersFlags, '/users/flags')
 api.add_resource(controller.UsersRating, '/users/rating')

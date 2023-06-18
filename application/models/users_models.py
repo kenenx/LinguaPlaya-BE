@@ -1,5 +1,5 @@
 import datetime
-from flask import jsonify
+from flask import jsonify,request
 from sqlalchemy import Integer, ForeignKey, String, Column
 from sqlalchemy.orm import DeclarativeBase
 from sqlalchemy.orm import relationship
@@ -107,6 +107,10 @@ class UserModel(db.Model):
                 'rating': x.rating,
                 # "flags": x.flags,
                 "profile_bio": x.profile_bio,
+                # 'languages_known': x.languages_known,
+                # 'languages_learn': x.languages_learn,
+                # 'games': x.games,
+                # 'connections': x.connections
                 # "time_zone" : x.time_zone,
                 # "last_online": x.last_online
         
@@ -181,24 +185,6 @@ class RevokedTokenModel(db.Model):
 
 ##############################################################
 
-# user models 
-# class Users(db.Model):
-
-# #rating,flags, connections, time_zone, last_online
-#     def __init__(self, name, email, username, password ):
-#         self.name = name
-#         self.email = email
-#         self.username = username
-#         self.password = bcrypt.generate_password_hash(
-#             password, app.config.get('BCRYPT_LOG_ROUNDS')
-#         ).decode()
-#         # self.rating = rating
-#         # self.flags = flags
-#         # self.connections = connections
-#         # self.time_zone = time_zone
-#         # self.last_online = last_online
-#         self.registered_on = datetime.datetime.now()
-
 # class UserLanguage(db.Model):
 #     user_languages_id = db.Column(db.Integer, primary_key=True)
 #     user_id = db.Column(db.Integer, ForeignKey("users.user_id"))
@@ -247,6 +233,7 @@ class Language(db.Model):
 
 class Game(db.Model):
     game_id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, nullable = False)
     game_name = db.Column(db.String(100), nullable=False)
     platform = db.Column(db.String(100), nullable=True)
     """
@@ -278,6 +265,81 @@ class Game(db.Model):
                 'platform': x.platform,
             }
         return {'games': [to_json(game) for game in Game.query.all()]}
+    
+# @app.route("/users/games")
+# def get_users_games():
+#     user_games_query = db.session.query(UserModel, Game, user_game).join(user_game, UserModel.user_id == user_game.user_id).filter(UserModel.user_id== Game.user_id).all()
+#     # user_games_query = db.session.query().join(UserModel).join(Game).filter(UserModel.user_id== Game.user_id).all()
+#     result = []
+    
+#     for row in user_games_query:
+@app.route("/users/<username>", methods=['GET'])
+def get_userdeets(username):
+        
+        current_user = UserModel.query.filter_by(username=username).first()
+
+        def to_json(x):
+            return {
+
+                'username': x.username,
+                'name': x.name,
+                'email': x.email,
+                'password': x.password,
+                'profile_bio': x.profile_bio,
+                'rating': x.rating,
+                'flags': x.flags,
+            #     'languages_known': x.languages_known,
+            #     'languages_learn': x.languages_learn,
+            #     'games': x.games,
+            #     'connections': x.connections
+            }
+        
+        return {'users': [to_json(current_user)]}
+@app.route("/users/<username>", methods=['PATCH'])
+def patch(username):
+        current_user = UserModel.query.filter_by(username=username).first()
+        #user_id = current_user.user_id
+        # user does not exists
+        if not current_user:
+            return {'message': f'User {username} doesn\'t exist'}
+    
+        data = request.json
+        current_user.username = data.get('username', current_user.username)
+        current_user.email = data.get('email', current_user.email)
+        current_user.name = data.get('name', current_user.name)
+        current_user.profile_bio = data.get('profile_bio', current_user.profile_bio)
+        db.session.commit()
+        updated_user = current_user
+        def to_json(updated_user):
+            return {
+
+                'name' :updated_user.name,
+                'username':updated_user.username,
+                'email': updated_user.email,
+                'profile_bio':updated_user.profile_bio,
+                # 'games':updated_user.games,
+                # 'languages_known' : updated_user.languages_known,
+                # 'languages_learn': updated_user.languages_learn,
+                # 'connections': updated_user.connections
+
+            }
+        
+        return {'users': [to_json(updated_user)]}
+
+@app.route("/users/<username>", methods=['DELETE'])
+def delete(username):
+
+    # Searching user by username
+    current_user = UserModel.find_by_username(username)
+
+    db.session.delete(current_user)
+    db.session.commit()
+        
+    if not current_user:
+    
+        return {'message': f'User {username} doesn\'t exist'}
+    # return UserModel.delete_user(current_user) 
+    return {'message': 'user deleted'}
     
 @app.route("/users/connections")
 def get_users_connections():
