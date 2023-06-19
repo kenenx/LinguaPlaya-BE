@@ -12,17 +12,17 @@ from passlib.hash import pbkdf2_sha256 as sha256
 # db.drop_all()
 # db.create_all()
 
-user_language_known = db.Table('user_language_known',
-                          db.Column('user_language_known_id',db.Integer, primary_key=True),
-                          db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
-                          db.Column('language_id',db.Integer, db.ForeignKey('language.language_id'))
-                          )
+# user_language_known = db.Table('user_language_known',
+#                           db.Column('user_language_known_id',db.Integer, primary_key=True),
+#                           db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
+#                           db.Column('language_known_id',db.Integer, db.ForeignKey('language_known.language_known_id'))
+#                           )
 
-user_language_learn = db.Table('user_language_learn',
-                          db.Column('user_language_learn_id',db.Integer, primary_key=True),
-                          db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
-                          db.Column('language_id',db.Integer, db.ForeignKey('language.language_id'))
-                          )
+# user_language_learn = db.Table('user_language_learn',
+#                           db.Column('user_language_learn_id',db.Integer, primary_key=True),
+#                           db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
+#                           db.Column('language_learn_id',db.Integer, db.ForeignKey('language_learn.language_learn_id'))
+#                           )
 
 user_game = db.Table('user_game',
                      db.Column('user_game_id',db.Integer, primary_key=True),
@@ -56,8 +56,8 @@ class UserModel(db.Model):
     time_zone = db.Column(db.Integer, nullable=True)
     last_online = db.Column(db.Integer, nullable=True)
     # user_languages = db.relationship('UserLanguage', backref='users')
-    languages_known = db.relationship('Language', secondary=user_language_known, backref='known', cascade="all,delete")
-    languages_learn = db.relationship('Language', secondary=user_language_learn, backref='learn', cascade="all,delete")
+    languages_known = db.relationship('Language_Known', backref='language_known_user', cascade="all,delete")
+    languages_learn = db.relationship('Language_Learn', backref='language_learn_user', cascade="all,delete")
     games = db.relationship('Game', secondary=user_game, backref='users', cascade="all,delete")
     connections = db.relationship('UserModel', secondary=user_connection, primaryjoin=user_id==user_connection.c.user_Parent_id,
                                   secondaryjoin=user_id==user_connection.c.user_Child_id,backref=('parent')
@@ -196,11 +196,12 @@ class RevokedTokenModel(db.Model):
 #                           db.Column('language_id',db.Integer, db.ForeignKey('language.language_id'))
 #                           )
     
-class Language(db.Model):
+class Language_Known(db.Model):
 
-    language_id = db.Column(db.Integer, primary_key=True)
-    language_name = db.Column(db.String(100),unique=True, nullable=False)
-    flag_base64 = db.Column(db.String(2000), nullable=True)
+    language_known_id = db.Column(db.Integer, primary_key=True)
+    language_known_name = db.Column(db.String(100),unique=True, nullable=False)
+    flag_base64_known = db.Column(db.String(2000), nullable=True)
+    user_id =  db.Column(db.Integer, db.ForeignKey('users.user_id'))
     """
     Save language details in Database
     """
@@ -212,12 +213,48 @@ class Language(db.Model):
     Find language by name
     """
     @classmethod
-    def find_by_name(cls, language_name):
-        return cls.query.filter_by(language_name=language_name).first()
+    def find_by_name(cls, language_known_name):
+        return cls.query.filter_by(language_known_name=language_known_name).first()
     
     @classmethod
-    def find_by_id(cls, language_id):
-        return cls.query.filter_by(language_id=language_id).first()
+    def find_by_id(cls, language_known_id):
+        return cls.query.filter_by(language_known_id=language_known_id).first()
+    """
+    return all the languages
+    """
+    @classmethod
+    def return_all(cls):
+        def to_json(x):
+            return {
+                'language_known_id': x.language_known_id,
+                'language_known_name': x.language_known_name,
+                # 'flag_base64': x.email,
+            }
+        return {'languages': [to_json(language) for language in Language_Known.query.all()]}
+    
+class Language_Learn(db.Model):
+    __tablename__ = 'learnt'
+    language_learn_id = db.Column(db.Integer, primary_key=True)
+    language_learn_name = db.Column(db.String(100),unique=True, nullable=False)
+    flag_base64_learn = db.Column(db.String(2000), nullable=True)
+    user_id =  db.Column(db.Integer, db.ForeignKey('users.user_id'))
+    """
+    Save language details in Database
+    """
+    def save_to_db(self):
+
+        db.session.add(self)
+        db.session.commit()
+    """
+    Find language by name
+    """
+    @classmethod
+    def find_by_name(cls, language_learn_name):
+        return cls.query.filter_by(language_learn_name=language_learn_name).first()
+    
+    @classmethod
+    def find_by_id(cls, language_learn_id):
+        return cls.query.filter_by(language_learn_id=language_learn_id).first()
     """
     return all the languages
     """
@@ -229,7 +266,7 @@ class Language(db.Model):
                 'language_name': x.language_name,
                 # 'flag_base64': x.email,
             }
-        return {'languages': [to_json(language) for language in Language.query.all()]}
+        return {'languages': [to_json(language) for language in Language_Learn.query.all()]}
 
 class Game(db.Model):
     game_id = db.Column(db.Integer, primary_key=True)
@@ -416,14 +453,27 @@ def get_users_games():
 
 @app.route("/users/getall")
 def get_users_all():
-    user_query = db.session.query(UserModel, Game, user_game).join(UserModel).join(Game).all()
+    user_query = db.session.query(UserModel, Game, user_game, Language_Known, Language_Learn).all()
     print(user_query)
     result = []
     for row in user_query:
         result.append({
-            'user_id': row.user_id,
-            'game_id': row.game_id,
+            # 'user_id': row.user_id,
+            # 'game_id': row.game_id,
             'username': row.UserModel.username,
-            'game_name': row.Game.game_name
+            'game_name': row.Game.game_name,
+            'language_learn': row.Language_Learn.language_learn_name,
+            'language_known': row.Language_Known.language_known_name
         })
     return jsonify(result)
+
+
+# @app.route("/users/games/<id>", methods=['GET', 'PATCH', 'DELETE'])
+# def user_games(id):
+#     if request.method == 'POST': return post_game(id)
+#     if request.method == 'PATCH': return patch_game(id)
+#     if request.method == 'DELETE': return delete_game(id)
+
+#     def post_game(id):
+#     user_id = id
+
