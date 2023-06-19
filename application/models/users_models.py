@@ -503,7 +503,7 @@ def post_lang_learn(username):
     data = request.json
 
     new_lang = Language_Learn(
-        language_learn_name = data['language_known_name'],
+        language_learn_name = data['language_learn_name'],
         username = username
     )
     db.session.add(new_lang)
