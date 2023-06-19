@@ -96,7 +96,9 @@ class UserLogin(Resource):
         
                 'message': f'Logged in as {username}',
                 'access_token': access_token,
-                'refresh_token': refresh_token
+                'refresh_token': refresh_token,
+                'username': current_user.username,
+                
         
             }
         
