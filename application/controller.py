@@ -59,7 +59,8 @@ class UserSignup(Resource):
             
                 'message': f'User {username} was created',
                 'access_token': access_token,
-                'refresh_token': refresh_token
+                'refresh_token': refresh_token,
+                'username': username
             }
         
         except (RuntimeError, TypeError, NameError, ValueError):
