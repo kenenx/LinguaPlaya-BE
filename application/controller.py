@@ -96,9 +96,13 @@ class UserLogin(Resource):
         
                 'message': f'Logged in as {username}',
                 'access_token': access_token,
+<<<<<<< HEAD
                 'refresh_token': refresh_token,
                 'username': current_user.username,
                 
+=======
+                'refresh_token': refresh_token
+>>>>>>> f764c36233d5057b24405fa352b007df52b204ba
         
             }
         
