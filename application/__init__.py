@@ -1,6 +1,6 @@
 import os
 from flask import Flask
-from flask_cors import CORS
+# from flask_cors import CORS
 from flask_restful import Api
 from flask_sqlalchemy import SQLAlchemy
 from flask_jwt_extended import JWTManager
@@ -10,7 +10,7 @@ load_dotenv()
 app = Flask(__name__)
 # Object of Api class
 api = Api(app)
-CORS(app)
+# CORS(app)
 
 # Application Configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = os.getenv('DB')
