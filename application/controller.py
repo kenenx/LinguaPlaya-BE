@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import session, request
 import json
 from application import app,db
-from application.models.users_models import UserModel, RevokedTokenModel, Language_Known, Language_Learn, Game, user_game
+from application.models.users_models import UserModel, RevokedTokenModel, Language_Known, Language_Learn, Game
 
 from flask_jwt_extended import (
     create_access_token,
