@@ -29,11 +29,10 @@ from passlib.hash import pbkdf2_sha256 as sha256
 #                      db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
 #                      db.Column('game_id',db.Integer, db.ForeignKey('game.game_id')))
 
-user_connection = db.Table('user_connection',
-                        db.Column('connection_id',db.Integer, primary_key=True),
-                        db.Column('user_Parent_id',db.Integer, db.ForeignKey('users.user_id')),
-                        db.Column('user_Child_id',db.Integer, db.ForeignKey('users.user_id')))
-
+# user_connection = db.Table('user_connection',
+#                         db.Column('connection_id',db.Integer, primary_key=True),
+#                         db.Column('user_Parent_id',db.Integer, db.ForeignKey('users.user_id')),
+#                         db.Column('user_Child_id',db.Integer, db.ForeignKey('users.user_id')))
 class UserModel(db.Model):
     """
     User Model Class
@@ -48,10 +47,6 @@ class UserModel(db.Model):
     # registered_on = db.Column(db.DateTime, nullable=False)
     rating = db.Column(db.Integer, nullable=False, default = 5)
     flags = db.Column(db.Integer, nullable=False, default = 0)
-# not sure about these yet
-#     # connections_id = db.Column(db.Integer, foreign_key = True)
-#     # langauges_id = db.Column(db.Integer, foreign_key = True)
-#     # games_id = db.Column(db.Integer, foreign_key = True)
     profile_bio = db.Column(db.String(500), nullable=True)
     time_zone = db.Column(db.Integer, nullable=True)
     last_online = db.Column(db.Integer, nullable=True)
@@ -59,9 +54,7 @@ class UserModel(db.Model):
     languages_known = db.relationship('Language_Known', backref='language_known_user', cascade="all,delete")
     languages_learn = db.relationship('Language_Learn', backref='language_learn_user', cascade="all,delete")
     games = db.relationship('Game', backref='game', cascade="all,delete")
-    connections = db.relationship('UserModel', secondary=user_connection, primaryjoin=user_id==user_connection.c.user_Parent_id,
-                                  secondaryjoin=user_id==user_connection.c.user_Child_id,backref=('parent')
-                                  )
+    connections = db.relationship('Connections', backref='connections', cascade="all,delete")
 
     """
     Save user details in Database
@@ -306,13 +299,12 @@ class Game(db.Model):
             }
         return {'games': [to_json(game) for game in Game.query.all()]}
     
-# @app.route("/users/games")
-# def get_users_games():
-#     user_games_query = db.session.query(UserModel, Game, user_game).join(user_game, UserModel.user_id == user_game.user_id).filter(UserModel.user_id== Game.user_id).all()
-#     # user_games_query = db.session.query().join(UserModel).join(Game).filter(UserModel.user_id== Game.user_id).all()
-#     result = []
-    
-#     for row in user_games_query:
+class Connections(db.Model):
+    connection_id = db.Column(db.Integer, primary_key=True)
+    parent_user = db.Column(db.String(120), db.ForeignKey('users.username'))
+    child_user = db.Column(db.String(120))
+
+
 @app.route("/users/<username>", methods=['GET'])
 def get_userdeets(username):
         
@@ -380,18 +372,6 @@ def delete(username):
         return {'message': f'User {username} doesn\'t exist'}
     # return UserModel.delete_user(current_user) 
     return {'message': 'user deleted'}
-    
-@app.route("/users/connections")
-def get_users_connections():
-    user_query = db.session.query(UserModel, user_connection).all()
-    result = []
-    print(user_query)
-    for row in user_query:
-        result.append({
-            'user_id': row[2],
-            'connected_user_id': row[3]
-        })
-    return jsonify(result)
 
 # @app.route("/users/languages")
 # def get_users_languages():
@@ -467,7 +447,9 @@ def get_users_all():
             'game_name': row.Game.game_name,
             'platform' : row.Game.platform,
             'language_learn': row.Language_Learn.language_learn_name,
-            'language_known': row.Language_Known.language_known_name
+            'language_known': row.Language_Known.language_known_name,
+            'rating': row.UserModel.rating,
+            'bio' : row.UserModel.profile_bio
         })
     return jsonify(result)
 
@@ -511,3 +493,27 @@ def post_lang_learn(username):
 
     return jsonify(language_learn_name= new_lang.language_learn_name, username = new_lang.username)
 
+@app.route("/users/add_connections/<username>", methods=['POST'])
+def add_connections(username):
+    data = request.json
+
+    new_con = Connections(
+        parent_user = username,
+        child_user = data['connect_username']
+    )
+
+    db.session.add(new_con)
+    db.session.commit()
+
+    return jsonify(parent_user = username, child_user = new_con.child_user)
+
+@app.route("/users/get_connections/<username>")
+def view_connections(username):
+    con = Connections.query.filter(Connections.parent_user == username)
+    result = []
+    for row in con:
+        result.append({
+            'parent_user': row.parent_user,
+            'child_user': row.child_user
+        })
+    return jsonify(result)

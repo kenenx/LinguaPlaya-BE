@@ -1,5 +1,5 @@
 from application import app, db
-from application.models.users_models import UserModel, Language_Known,Language_Learn, Game
+from application.models.users_models import UserModel, Language_Known,Language_Learn, Game, Connections
 
 app.app_context().push()
 db.drop_all()
@@ -37,9 +37,6 @@ user1.games.append(game1)
 user1.games.append(game5)
 user2.games.append(game2)
 user2.games.append(game4)
-
-user1.connections.append(user2)
-user2.connections.append(user1)
 
 
 db.session.add_all([user1,user2])
