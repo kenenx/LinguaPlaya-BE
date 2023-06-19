@@ -284,7 +284,7 @@ def get_userdeets(username):
                 'username': x.username,
                 'name': x.name,
                 'email': x.email,
-                'password': x.password,
+                # 'password': x.password,
                 'profile_bio': x.profile_bio,
                 'rating': x.rating,
                 'flags': x.flags,

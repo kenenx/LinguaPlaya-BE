@@ -97,15 +97,8 @@ class UserLogin(Resource):
                 'message': f'Logged in as {username}',
                 'access_token': access_token,
                 'refresh_token': refresh_token,
-                'userinfo': {
-                    'user':{'username': current_user.username,
-                    'name': current_user.name,
-                    'email': current_user.email,
-                    'password': current_user.password,
-                    'profile_bio': current_user.profile_bio,
-                    'rating': current_user.rating,
-                    'flags': current_user.flags}
-                }
+                'username': current_user.username,
+                
         
             }
         
