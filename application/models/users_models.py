@@ -517,3 +517,19 @@ def view_connections(username):
             'child_user': row.child_user
         })
     return jsonify(result)
+
+@app.route("/users/all/<username>")
+def get_user(username):
+    user = db.session.query(UserModel, Game, Language_Known, Language_Learn).join(Game).join(Language_Known, UserModel.languages_known).join(Language_Learn, UserModel.languages_learn).filter(UserModel.username == username).first()
+    print(user)
+    result = {
+            'username': user.UserModel.username,
+            'game_name': user.Game.game_name,
+            'platform' : user.Game.platform,
+            'language_learn': user.Language_Learn.language_learn_name,
+            'language_known': user.Language_Known.language_known_name,
+            'rating': user.UserModel.rating,
+            'bio' : user.UserModel.profile_bio,
+            'flags' : user.UserModel.flags
+        }
+    return jsonify(result)
