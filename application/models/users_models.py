@@ -199,7 +199,7 @@ class RevokedTokenModel(db.Model):
 class Language_Known(db.Model):
     __tablename__ = 'known'
     language_known_id = db.Column(db.Integer, primary_key=True)
-    language_known_name = db.Column(db.String(100),unique=True, nullable=False)
+    language_known_name = db.Column(db.String(100), nullable=False)
     flag_base64_known = db.Column(db.String(2000), nullable=True)
     # user_id =  db.Column(db.Integer, db.ForeignKey('users.user_id'))
     username =  db.Column(db.String(120), db.ForeignKey('users.username'))
@@ -236,7 +236,7 @@ class Language_Known(db.Model):
 class Language_Learn(db.Model):
     __tablename__ = 'learn'
     language_learn_id = db.Column(db.Integer, primary_key=True)
-    language_learn_name = db.Column(db.String(100),unique=True, nullable=False)
+    language_learn_name = db.Column(db.String(100), nullable=False)
     flag_base64_learn = db.Column(db.String(2000), nullable=True)
     # user_id =  db.Column(db.Integer, db.ForeignKey('users.user_id'))
     username =  db.Column(db.String(120), db.ForeignKey('users.username'))
