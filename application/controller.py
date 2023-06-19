@@ -2,7 +2,7 @@ from flask_restful import Resource, reqparse
 from flask import session, request
 import json
 from application import app,db
-from application.models.users_models import UserModel, RevokedTokenModel, Language, Game, user_game
+from application.models.users_models import UserModel, RevokedTokenModel, Language_Known, Language_Learn, Game, user_game
 
 from flask_jwt_extended import (
     create_access_token,
@@ -318,30 +318,58 @@ class UsersRating(Resource):
         
         return {'users': [to_json(current_user)]}
     
-class AllLanguages(Resource):
+class AllLanguages_Known(Resource):
     def get(self):
-        return Language.return_all()
+        return Language_Known.return_all()
     
-class Languages(Resource):
+class Languages_Known(Resource):
     def post(self):
-        parser.add_argument('language_name', help='language cannot be blank', required=False)
+        parser.add_argument('language_known_name', help='language cannot be blank', required=False)
         data = parser.parse_args()
 
-        language_name = data['language_name']
+        language_known_name = data['language_known_name']
         # flag_base64 = data['flag_base64']
 
         # Checking that user is already exist or not
-        if Language.find_by_name(language_name):
-            return {'message': f'{language_name} already exists'}
+        if Language_Known.find_by_name(language_known_name):
+            return {'message': f'{language_known_name} already exists'}
         # create new language
-        new_language = Language(
-            language_name=language_name,
+        new_language = Language_Known(
+            language_known_name=language_known_name,
             # flag_base64= flag_base64,
         )
         try:
             new_language.save_to_db()
             return {
-                'message': f'{language_name} was created',
+                'message': f'{language_known_name} was created',
+            }
+        except (RuntimeError, TypeError, NameError, ValueError):
+            return RuntimeError, TypeError, NameError, ValueError
+
+class AllLanguages_Learn(Resource):
+    def get(self):
+        return Language_Known.return_all()
+    
+class Languages_Learn(Resource):
+    def post(self):
+        parser.add_argument('language_learn_name', help='language cannot be blank', required=False)
+        data = parser.parse_args()
+
+        language_learn_name = data['language_learn_name']
+        # flag_base64 = data['flag_base64']
+
+        # Checking that user is already exist or not
+        if Language_Learn.find_by_name(language_learn_name):
+            return {'message': f'{language_learn_name} already exists'}
+        # create new language
+        new_language = Language_Learn(
+            language_learn_name=language_learn_name,
+            # flag_base64= flag_base64,
+        )
+        try:
+            new_language.save_to_db()
+            return {
+                'message': f'{language_learn_name} was created',
             }
         except (RuntimeError, TypeError, NameError, ValueError):
             return RuntimeError, TypeError, NameError, ValueError
