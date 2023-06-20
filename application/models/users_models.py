@@ -447,7 +447,9 @@ def get_users_all():
             'game_name': row.Game.game_name,
             'platform' : row.Game.platform,
             'language_learn': row.Language_Learn.language_learn_name,
+            'flag_base64_learn': row.Language_Learn.flag_base64_learn,
             'language_known': row.Language_Known.language_known_name,
+            'flag_base64_known': row.Language_Known.flag_base64_known,
             'rating': row.UserModel.rating,
             'bio' : row.UserModel.profile_bio
         })
@@ -527,7 +529,9 @@ def get_user(username):
             'game_name': user.Game.game_name,
             'platform' : user.Game.platform,
             'language_learn': user.Language_Learn.language_learn_name,
+            'flag_base64_learn': user.Language_Learn.flag_base64_learn,
             'language_known': user.Language_Known.language_known_name,
+            'flag_base64_known': user.Language_Known.flag_base64_known,
             'rating': user.UserModel.rating,
             'bio' : user.UserModel.profile_bio,
             'flags' : user.UserModel.flags
