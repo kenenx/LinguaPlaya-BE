@@ -526,6 +526,8 @@ def get_user(username):
     print(user)
     result = {
             'username': user.UserModel.username,
+            'name': user.UserModel.name,
+            'email': user.UserModel.email,
             'game_name': user.Game.game_name,
             'platform' : user.Game.platform,
             'language_learn': user.Language_Learn.language_learn_name,
