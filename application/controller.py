@@ -36,7 +36,7 @@ class UserSignup(Resource):
         # Checking that user is already exist or not
         if UserModel.find_by_username(username):
 
-            return {'message': f'User {username} already exists'}
+            return {'message': f'User {username} already exists'}, 403
 
         # create new user
         new_user = UserModel(
