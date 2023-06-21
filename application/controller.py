@@ -133,40 +133,9 @@ class UserLogoutAccess(Resource):
     
             return {'message': 'Something went wrong'}, 500
 
-
-#  class UserLogoutRefresh(Resource):
     """
     User Logout Refresh Api 
     """
-    # @jwt_refresh_token_required
-    # def post(self):
-
-        # jti = get_jwt()['jti']
-        
-        # try:
-        
-        #     revoked_token = RevokedTokenModel(jti=jti)
-        
-        #     revoked_token.add()
-        
-        #     pdb.set_trace()
-        
-        #     return {'message': 'Refresh token has been revoked'}
-        
-        # except:
-        
-        #     return {'message': 'Something went wrong'}, 500
-
-# class UserLogout(Resource):
-#     """
-#     User Logout Api 
-#     """
-#     @jwt_required
-#     def get(self):
-
-#         if 'username' in session:
-#             session.pop('username', None)
-#         return {'message' : 'You successfully logged out'}
 
 class TokenRefresh(Resource):
     """
@@ -187,105 +156,6 @@ class AllUsers(Resource):
         
         return UserModel.return_all()
 
-#class UsersDeets(Resource):
-        
-    # def get(self,username):
-    #     parser.add_argument('username', help='username cannot be blank', required=False)
-        
-    #     data = parser.parse_args()
-    #     #username = data['username']
-    #     # Searching user by username
-    #     current_user = UserModel.find_by_username(username)
-        
-    #     # user does not exists
-    #     # if not current_user:
-    #     #     return {'message': f'User {username} doesn\'t exist'}
-        
-    #     # user exists, comparing password and hash
-    #     #if UserModel.verify_hash(data['password'], current_user.password):
-            
-    #         # generating access token and refresh token
-    #     def to_json(x):
-    #         return {
-
-    #             'username': x.username,
-    #             'name': x.name,
-    #             'email': x.email,
-    #             'password': x.password,
-    #             'profile_bio': x.profile_bio,
-    #             'rating': x.rating,
-    #             'flags': x.flags,
-    #         #     'languages_known': x.languages_known,
-    #         #     'languages_learn': x.languages_learn,
-    #         #     'games': x.games,
-    #         #     'connections': x.connections
-    #         }
-        
-    #     return {'users': [to_json(current_user)]}
-    
-    # def patch(self):
-    #     parser.add_argument('username', required=False)
-    #     parser.add_argument('email', required=False)
-    #     parser.add_argument('name', required=False)
-    #     parser.add_argument('profile_bio', required=False)
-    #     # parser.add_argument('games', required=False)
-    #     # parser.add_argument('languages_known', required=False)
-    #     # parser.add_argument('languages_learn', required=False)
-    #     # parser.add_argument('', required=False)
-    #     # parser.add_argument('user_id', required=True)
-    #     data = parser.parse_args()
-    #     username = data['username']
-    #     # name = data['name']
-    #     # email = data['email']
-    #     # profile_bio = data['profile_bio']
-    #     # user_id = data['user_id']
-    #     # Searching user by username
-    #     current_user = UserModel.find_by_username(username)
-    #     # user does not exists
-    #     if not current_user:
-    #         return {'message': f'User {username} doesn\'t exist'}
-    
-    #     def to_json(x):
-           
-    #         x.username = data['username']
-    #         x.email = data['email'] 
-    #         x.name = data['name']
-    #         x.profile_bio = data['profile_bio'] 
-    #         db.session.commit()
-    #         updated_user = x
-    #         return {
-
-    #             'name' :updated_user.name,
-    #             'username':updated_user.username,
-    #             'email': updated_user.email,
-    #             'profile_bio':updated_user.profile_bio,
-    #             'games':updated_user.games,
-    #             'languages_known' : updated_user.languages_known,
-    #             'languages_learn': updated_user.languages_learn,
-    #             'connections': updated_user.connections
-
-    #         }
-        
-       
-    #     return {'users': [to_json(current_user)]}
-
-
-    # def delete(self):
-
-    #     data = parser.parse_args()
-    #     username = data['username']
-    #     # Searching user by username
-    #     current_user = UserModel.find_by_username(username)
-
-    #     db.session.delete(current_user)
-    #     db.session.commit()
-           
-    #     if not current_user:
-        
-    #         return {'message': f'User {username} doesn\'t exist'}
-    #     # return UserModel.delete_user(current_user) 
-    #     return {'message': 'user deleted'}
-        
 class UsersFlags(Resource):
     def patch(self):
         parser.add_argument('flags', required=False)

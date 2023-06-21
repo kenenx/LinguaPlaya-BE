@@ -6,6 +6,7 @@ import application.models.users_models
 import application.controller
 import application.routes
 from flask import Flask
+
 app = Flask(__name__)
 #app = app()
 app.config.update({

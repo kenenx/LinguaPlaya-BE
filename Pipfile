@@ -18,6 +18,10 @@ six = "*"
 pytz = "*"
 pyjwt = "*"
 flask-testing = "*"
+pipenv = "*"
+flask-wtf = "*"
+pytest = "*"
+pytest-cov = "*"
 
 [dev-packages]
 pytest-cov = "*"

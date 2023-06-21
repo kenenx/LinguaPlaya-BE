@@ -8,31 +8,6 @@ from sqlalchemy.orm import relationship
 from application import app,db
 from passlib.hash import pbkdf2_sha256 as sha256
 
-# app.app_context().push()
-# db.drop_all()
-# db.create_all()
-
-# user_language_known = db.Table('user_language_known',
-#                           db.Column('user_language_known_id',db.Integer, primary_key=True),
-#                           db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
-#                           db.Column('language_known_id',db.Integer, db.ForeignKey('language_known.language_known_id'))
-#                           )
-
-# user_language_learn = db.Table('user_language_learn',
-#                           db.Column('user_language_learn_id',db.Integer, primary_key=True),
-#                           db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
-#                           db.Column('language_learn_id',db.Integer, db.ForeignKey('language_learn.language_learn_id'))
-#                           )
-
-# user_game = db.Table('user_game',
-#                      db.Column('user_game_id',db.Integer, primary_key=True),
-#                      db.Column('user_id',db.Integer, db.ForeignKey('users.user_id')),
-#                      db.Column('game_id',db.Integer, db.ForeignKey('game.game_id')))
-
-# user_connection = db.Table('user_connection',
-#                         db.Column('connection_id',db.Integer, primary_key=True),
-#                         db.Column('user_Parent_id',db.Integer, db.ForeignKey('users.user_id')),
-#                         db.Column('user_Child_id',db.Integer, db.ForeignKey('users.user_id')))
 class UserModel(db.Model):
     """
     User Model Class
@@ -76,13 +51,7 @@ class UserModel(db.Model):
     def find_by_id(cls, user_id):
             
         return cls.query.filter_by(user_id=user_id).first()
-    
-    # @classmethod
-    # def find_user_games(cls, user_id):
-    #     # query.join(user_game).join(Game).filter(user_game.c.user_id == cls.user_id) & (user_game.c.game_id == Game.game_id).all()
 
-    #     # return db.session.query.join(user_game).join(Game).filter(user_game.c.user_id == cls.user_id) & (user_game.c.game_id == Game.game_id).all()
-    #     return cls.query(cls).join(user_game, cls.user_id == user_game.user_id).filter(cls.user_id== user_id).all()
         
     """
     return all the user data in json form available in DB
@@ -110,26 +79,6 @@ class UserModel(db.Model):
             }
         
         return {'users': [to_json(user) for user in UserModel.query.all()]}
-
-    # """
-    # Delete user data
-    # """
-    # @classmethod
-    # def delete_user(cls, username):
-        
-    #     try:
-           
-    #         num_rows_deleted = cls.query.filter_by(username=username).first()
-    #         print('hello')
-    #         obj = cls.query.filter_by(num_rows_deleted).one()
-    #         db.session.delete(obj)
-    #         db.session.commit()
-           
-    #         return {'message': f'{username} is deleted'}
-        
-    #     except:
-        
-    #         return {'message': 'Something went wrong'}
 
     """
     generate hash from password by encryption using sha256
